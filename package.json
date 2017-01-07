@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Online multiuser typing game",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node index",
+    "watch": "nodemon index"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wiranoid/space-racers.git"
@@ -20,5 +23,8 @@
     "koa": "^2.0.0-alpha.7",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
