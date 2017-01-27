@@ -1,0 +1,7 @@
+<div>
+    <span *ngFor="let word of words; let index = index"
+          [class.current-word]="index === currentWordIndex">
+        {{ word }}
+    </span>
+</div>
+<textarea autofocus [(ngModel)]="currentWord" (input)="input$.next()"></textarea>
