@@ -1,7 +1,9 @@
 <div>
     <span *ngFor="let word of words; let index = index"
-          [class.current-word]="index === currentWordIndex">
+          [class.current-word]="index === currentWordIndex"
+          [class.incorrect-word]="index === currentWordIndex && isCurrentWordIncorrect">
         {{ word }}
     </span>
 </div>
 <textarea autofocus [(ngModel)]="currentWord" (input)="input$.next()"></textarea>
+<span>Number of errors: {{ numberOfErrors }}</span>

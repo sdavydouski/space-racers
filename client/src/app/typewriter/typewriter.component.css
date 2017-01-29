@@ -12,7 +12,7 @@ span.current-word {
     text-decoration: underline;
 }
 
-span.invalid-word {
+span.incorrect-word {
     color: crimson;
     font-weight: bold;
     text-decoration: underline;
