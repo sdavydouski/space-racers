@@ -20,15 +20,16 @@ export class TypewriterComponent implements OnInit {
     constructor() {
         this.input$
             .do(() => {
-                this.isCurrentWordIncorrect = false;
-
                 if (this.hasError()) {
                     this.handleError();
-                } else if (this.isWordFinished()) {
-                    this.goToTheNextWord();
-                } else if (this.isTypingFinished()) {
-                    this.goToTheNextWord();
-                    this.finish();
+                } else {
+                    this.isCurrentWordIncorrect = false;
+                    if (this.isWordFinished()) {
+                        this.goToTheNextWord();
+                    } else if (this.isTypingFinished()) {
+                        this.goToTheNextWord();
+                        this.finish();
+                    }
                 }
 
             })
@@ -77,8 +78,11 @@ export class TypewriterComponent implements OnInit {
     }
 
     private handleError(): void {
+        if (!this.isCurrentWordIncorrect) {
+            this.numberOfErrors++;
+        }
+
         this.isCurrentWordIncorrect = true;
-        this.numberOfErrors++;
     }
 
     private goToTheNextWord(): void {
