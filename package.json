@@ -18,13 +18,14 @@
   },
   "homepage": "https://github.com/wiranoid/space-racers#readme",
   "dependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
-    "babel-register": "^6.18.0",
     "koa": "^2.0.0-alpha.7",
     "koa-router": "^7.0.1",
-    "koa-static": "^3.0.0"
+    "koa-static": "^3.0.0",
+    "mongoose": "^4.8.1"
   },
   "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babel-register": "^6.18.0",
     "nodemon": "^1.11.0"
   }
 }
