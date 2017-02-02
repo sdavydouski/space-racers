@@ -1,3 +1,6 @@
 .idea
 node_modules
 client/dist
+data/test/*
+!data/test/example.txt
+!data/test/text_to_track.py

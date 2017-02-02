@@ -8,6 +8,10 @@ const trackSchema = new mongoose.Schema({
     text: {
         type: String,
         required: true
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Racer'
     }
 }, {
     timestamps: true
