@@ -21,7 +21,8 @@
     "koa": "^2.0.0-alpha.7",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",
-    "mongoose": "^4.8.1"
+    "mongoose": "^4.8.1",
+    "socket.io": "^1.7.2"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.16.0",
