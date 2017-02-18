@@ -1,22 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-
 import { AppComponent } from './app.component';
-import { TypewriterComponent } from './typewriter/typewriter.component';
+import {AppRouting} from './app.routes';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TypewriterComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        AppRouting
+    ],
+    declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

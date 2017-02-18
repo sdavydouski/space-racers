@@ -3,8 +3,8 @@ import {Subject} from "rxjs";
 
 @Component({
     selector: 'app-typewriter',
-    templateUrl: './typewriter.component.html',
-    styleUrls: ['./typewriter.component.css']
+    templateUrl: 'typewriter.component.html',
+    styleUrls: ['typewriter.component.css']
 })
 export class TypewriterComponent implements OnInit {
     @Input() text: string;
