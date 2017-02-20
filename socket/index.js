@@ -1,3 +1,5 @@
+const Track = require('../models/track');
+
 module.exports = server => {
     const io = require('socket.io').listen(server);
 
@@ -6,7 +8,12 @@ module.exports = server => {
 
         socket.on('disconnect', () => {
             console.log('Client disconnected ' + socket.id);
-        })
+        });
+
+        socket.on('get-race-types', async () => {
+            const raceTypes = await Track.find().distinct('type');
+            socket.emit('get-race-types', raceTypes);
+        });
     });
 
 };

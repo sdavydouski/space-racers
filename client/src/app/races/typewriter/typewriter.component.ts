@@ -2,7 +2,7 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {Subject} from "rxjs";
 
 @Component({
-    selector: 'app-typewriter',
+    selector: 'typewriter',
     templateUrl: 'typewriter.component.html',
     styleUrls: ['typewriter.component.css']
 })
@@ -36,7 +36,7 @@ export class TypewriterComponent implements OnInit {
             .subscribe();
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.words = this.text.replace(/\s+/g,' ').split(' ');
     }
 
