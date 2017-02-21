@@ -24,8 +24,8 @@ export class SocketService {
         });
     }
 
-    emit(event: string, ...args: any[]): void {
-        this.socket.emit(event, args);
+    emit(event: string, data?: any): void {
+        this.socket.emit(event, data);
     }
 
     on$(event: string): Observable<any> {

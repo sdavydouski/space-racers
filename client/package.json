@@ -32,6 +32,7 @@
     "socket.io-client": "^1.7.2",
     "ts-helpers": "^1.1.1",
     "tslint": "^4.4.2",
+    "uuid": "^3.0.1",
     "zone.js": "^0.7.6"
   },
   "devDependencies": {

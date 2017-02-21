@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {SocketService} from "./races/socket.service";
 
 @Component({
     selector: 'app-root',
@@ -29,4 +30,12 @@ export class AppComponent {
         {url: '', content: 'Home'},
         {url: 'races', content: 'Races'}
     ];
+
+    constructor(private socketService: SocketService) {
+        socketService.connect();
+    }
+
+    ngOnDestroy(): void {
+        this.socketService.disconnect();
+    }
 }

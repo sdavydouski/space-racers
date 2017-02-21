@@ -1,10 +1,13 @@
-import {Component} from "@angular/core";
+import {Component, OnDestroy} from "@angular/core";
+import {SocketService} from "./socket.service";
 
 @Component({
 
     template: `
         <!--<typewriter [text]="text" (onFinished)="onFinished($event)"></typewriter>-->
-        <new-race></new-race>
+        <a routerLink="new">New Race</a>
+        <h3>Current races:</h3>
+        <race-list></race-list>
     `
 })
 export class RacesComponent {
@@ -18,4 +21,5 @@ export class RacesComponent {
     onFinished(raceInfo: any) {
         console.log('Race is finished!', raceInfo);
     }
+
 }

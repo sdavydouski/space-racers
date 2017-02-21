@@ -5,7 +5,9 @@ import {RacesComponent} from "./races.component";
 import {NewRaceComponent} from "./new-race/new-race.component";
 import {TypewriterComponent} from "./typewriter/typewriter.component";
 import {RacesRouting} from './races.routes';
-import {SocketService} from "./socket.service";
+import {RaceComponent} from "./race/race.component";
+import {RaceListComponent} from "./race-list/race-list.component";
+import {IterablePipe} from "./iterable.pipe";
 
 @NgModule({
     imports: [
@@ -15,11 +17,11 @@ import {SocketService} from "./socket.service";
     ],
     declarations: [
         RacesComponent,
+        RaceComponent,
         NewRaceComponent,
-        TypewriterComponent
-    ],
-    providers: [
-        SocketService
+        RaceListComponent,
+        TypewriterComponent,
+        IterablePipe
     ]
 })
 export default class RacesModule {

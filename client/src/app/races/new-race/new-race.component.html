@@ -1,7 +1,8 @@
-<h2>Race Types</h2>
-<select>
+<h3>Race Types</h3>
+<select #selectedRaceType>
     <option *ngFor="let raceType of raceTypes"
-            value="raceType">
+            [value]="raceType">
         {{ raceType }}
     </option>
 </select>
+<button (click)="go(selectedRaceType.value)">Go!</button>
