@@ -4,6 +4,7 @@ const serve = require('koa-static');
 const send = require('koa-send');
 
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/spaceracersdb');
 
 app.use(require('./routes/api'));
