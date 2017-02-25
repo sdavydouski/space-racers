@@ -1,36 +1,44 @@
-import {Component} from "@angular/core";
+import {Component, OnInit, OnDestroy} from "@angular/core";
 import {SocketService} from "../socket.service";
+import {Subscription} from "rxjs";
+
 @Component({
     selector: 'race-list',
     templateUrl: 'race-list.component.html'
 })
-export class RaceListComponent {
-    races: any;
+export class RaceListComponent implements OnInit, OnDestroy {
+    races: Array<any>;
+    initRacesSubscription: Subscription;
+    addRaceSubscription: Subscription;
+    removeRaceSubscription: Subscription;
 
-    constructor(private socketService: SocketService) {
-        socketService.emit('init-races');
+    constructor(private socketService: SocketService) {}
 
-        socketService.on$('init-races')
+    ngOnInit(): void {
+        this.socketService.emit('init-races');
+
+        this.initRacesSubscription = this.socketService.on$('init-races')
             .subscribe(races => {
-                console.log(races);
-                this.races = [];
-                // races.length && races.forEach(race => {
-                //     this.races.set(race.id, race);
-                // })
-                if (races.length) {
-                    this.races = races;
-                }
+                this.races = races;
             });
 
-        socketService.on$('add-race')
+        this.addRaceSubscription = this.socketService.on$('add-race')
             .subscribe(race => {
                 this.races.push(race);
             });
 
-        socketService.on$('remove-race')
+        this.removeRaceSubscription = this.socketService.on$('remove-race')
             .subscribe(race => {
-                //this.races.delete(race.id);
+                // todo: handle -1 index
+                this.races.splice(this.races.indexOf(race), 1);
             });
+    }
+
+    ngOnDestroy(): void {
+        //todo: find better ways to do this
+        this.initRacesSubscription.unsubscribe();
+        this.addRaceSubscription.unsubscribe();
+        this.removeRaceSubscription.unsubscribe();
     }
 
 }

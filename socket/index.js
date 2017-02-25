@@ -22,11 +22,11 @@ module.exports = server => {
             socket.broadcast.emit('add-race', race);
         });
         socket.on('remove-race', async (race) => {
-            //races.delete(race.id);
+            // todo: handle -1 index
+            races.splice(races.indexOf(race), 1);
             socket.broadcast.emit('add-race', race);
         });
         socket.on('init-races', async () => {
-            console.log(races);
             socket.emit('init-races', races);
         });
     });

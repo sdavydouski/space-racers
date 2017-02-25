@@ -7,7 +7,6 @@ import {TypewriterComponent} from "./typewriter/typewriter.component";
 import {RacesRouting} from './races.routes';
 import {RaceComponent} from "./race/race.component";
 import {RaceListComponent} from "./race-list/race-list.component";
-import {IterablePipe} from "./iterable.pipe";
 
 @NgModule({
     imports: [
@@ -20,8 +19,7 @@ import {IterablePipe} from "./iterable.pipe";
         RaceComponent,
         NewRaceComponent,
         RaceListComponent,
-        TypewriterComponent,
-        IterablePipe
+        TypewriterComponent
     ]
 })
 export default class RacesModule {

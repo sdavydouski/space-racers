@@ -1,6 +1,6 @@
 <h3>Race Types</h3>
 <select #selectedRaceType>
-    <option *ngFor="let raceType of raceTypes"
+    <option *ngFor="let raceType of raceTypes | async"
             [value]="raceType">
         {{ raceType }}
     </option>

@@ -8,9 +8,7 @@ export class SocketService {
     url: string = location.origin;
     socket: Socket;
 
-    constructor() {
-        console.log('SocketService constructor');
-    }
+    constructor() {}
 
     connect(): void {
         this.socket = io(this.url);
@@ -20,7 +18,7 @@ export class SocketService {
         });
 
         this.socket.on('disconnect', () => {
-            console.log('disconnected ', this.socket.id);
+            console.log('disconnected ');
         });
     }
 
@@ -34,6 +32,10 @@ export class SocketService {
                 console.log(data);
                 observer.next(data);
             });
+
+            return () => {
+                this.socket.off(event);
+            };
         });
     }
 
