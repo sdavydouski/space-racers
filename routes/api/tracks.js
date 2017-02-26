@@ -8,10 +8,7 @@ router
         ctx.body = await Track.find();
     })
     .get('/random', async (ctx) => {
-        let count = await Track.count({});
-        let random = Math.floor(Math.random() * count);
-
-        ctx.body = await Track.findOne().skip(random);
+        ctx.body = await Track.findRandom();
     });
 
 module.exports = router.routes();

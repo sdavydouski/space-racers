@@ -32,7 +32,7 @@ export class AppComponent {
     ];
 
     constructor(private socketService: SocketService) {
-        socketService.connect();
+        socketService.connect('/racing');
     }
 
     ngOnDestroy(): void {

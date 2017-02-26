@@ -13,6 +13,7 @@ const racerSchema = new mongoose.Schema({
     spaceship: Buffer,
     races: [
         {
+            _id: false,
             createdAt: {
                 type: Date,
                 required: true

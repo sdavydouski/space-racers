@@ -10,32 +10,27 @@ export class SocketService {
 
     constructor() {}
 
-    connect(): void {
-        this.socket = io(this.url);
+    connect(namespace: string): void {
+        this.socket = io(this.url + namespace);
 
         this.socket.on('connect', () => {
             console.log('connected ', this.socket.id);
         });
 
         this.socket.on('disconnect', () => {
-            console.log('disconnected ');
+            console.log('disconnected');
         });
     }
 
-    emit(event: string, data?: any): void {
-        this.socket.emit(event, data);
+    emit(event: string, ...args: any[]): void {
+        this.socket.emit(event, ...args);
     }
 
     on$(event: string): Observable<any> {
         return Observable.create(observer => {
-            this.socket.on(event, data => {
-                console.log(data);
-                observer.next(data);
-            });
+            this.socket.on(event, data => observer.next(data));
 
-            return () => {
-                this.socket.off(event);
-            };
+            return () => this.socket.off(event);
         });
     }
 
