@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter, OnChanges} from '@angular/core';
 import {Subject} from "rxjs";
 
 @Component({
@@ -6,8 +6,9 @@ import {Subject} from "rxjs";
     templateUrl: 'typewriter.component.html',
     styleUrls: ['typewriter.component.css']
 })
-export class TypewriterComponent implements OnInit {
+export class TypewriterComponent implements OnInit, OnChanges {
     @Input() text: string;
+    @Output() onKeyPress: EventEmitter<any> = new EventEmitter();
     @Output() onFinished: EventEmitter<any> = new EventEmitter();
 
     words: Array<string>;
@@ -25,6 +26,10 @@ export class TypewriterComponent implements OnInit {
                 } else {
                     this.isCurrentWordIncorrect = false;
                     if (this.isWordFinished()) {
+                        this.onKeyPress.emit({
+                            current: this.currentWordIndex + 1,
+                            total: this.words.length
+                        });
                         this.goToTheNextWord();
                     } else if (this.isTypingFinished()) {
                         this.goToTheNextWord();
@@ -37,7 +42,15 @@ export class TypewriterComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.words = this.text.replace(/\s+/g,' ').split(' ');
+        if (!this.text) return;
+
+        this.words = this.text.trim().replace(/\s+/g,' ').split(' ');
+    }
+
+    ngOnChanges(): void {
+        if (!this.text) return;
+
+        this.words = this.text.trim().replace(/\s+/g,' ').split(' ');
     }
 
     private hasError(): boolean {

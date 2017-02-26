@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, HostListener} from "@angular/core";
 import {SocketService} from "../socket.service";
 import {ActivatedRoute} from "@angular/router";
 import uuid from 'uuid/v1';
-import {Subscription} from "rxjs";
+import {Subscription, Observable} from "rxjs";
 
 @Component({
     templateUrl: 'race.component.html'
@@ -12,9 +12,7 @@ export class RaceComponent implements OnInit, OnDestroy {
     racerId: string;
     race: any = {};
 
-    getRaceInfoSubscription: Subscription;
-    joinRaceSubscription: Subscription;
-    leaveRaceSubscription: Subscription;
+    socketSubscription: Subscription;
 
     constructor(private route: ActivatedRoute,
                 private socketService: SocketService) {}
@@ -29,38 +27,43 @@ export class RaceComponent implements OnInit, OnDestroy {
                 this.socketService.emit('get-race-info', this.raceId);
             });
 
-        this.getRaceInfoSubscription = this.socketService.on$('get-race-info')
+        this.socketSubscription = this.socketService.on$('get-race-info')
             .take(1)
-            .subscribe(race => {
+            .do(race => {
                 this.race = race;
                 this.socketService.emit('join-race', this.raceId, this.racerId);
-            });
+            })
+            .flatMap(() => Observable.merge(
+                this.socketService.on$('join-race')
+                    .do(data => this.race.racers.push(data.racerId)),
+                this.socketService.on$('leave-race')
+                    .do(data => {
+                        let racerIndex = this.race.racers.indexOf(data.racerId);
+                        this.race.racers.splice(racerIndex, 1);
+                    })
+            ))
+            .subscribe();
+    }
 
-        this.joinRaceSubscription = this.socketService.on$('join-race')
-            .subscribe(data => {
-                this.race.racers.push(data.racerId);
-            });
+    onKeyPress(raceSnapshot: any): void {
+        console.log(raceSnapshot);
+    }
 
-        this.leaveRaceSubscription = this.socketService.on$('leave-race')
-            .subscribe(data => {
-                let racerIndex = this.race.racers.indexOf(data.racerId);
-                this.race.racers.splice(racerIndex, 1);
-            });
+    onFinished(raceInfo: any): void {
+        console.log('Race is finished!', raceInfo);
     }
 
     ngOnDestroy(): void {
         this.cleanUp();
     }
 
-    @HostListener('window:beforeunload')
-    beforeunloadHandler() {
+    @HostListener('window:beforeunload', ['$event'])
+    beforeUnloadHandler(event): void {
         this.cleanUp();
     }
 
-    cleanUp() {
-        this.getRaceInfoSubscription.unsubscribe();
-        this.joinRaceSubscription.unsubscribe();
-        this.leaveRaceSubscription.unsubscribe();
+    private cleanUp(): void {
+        this.socketSubscription.unsubscribe();
         this.socketService.emit('leave-race', this.raceId, this.racerId);
     }
 }

@@ -67,6 +67,11 @@ module.exports = server => {
             console.log(races);
 
             let race = races.find(race => race.id === raceId);
+            //todo: track is a big object, handle it with caress
+            if (!race.track) {
+                race.track = await Track.findRandomByType(race.type);
+            }
+
             socket.emit('get-race-info', race);
         });
 

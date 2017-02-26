@@ -1,4 +1,10 @@
 <h3>Race</h3>
+
+<typewriter [text]="race?.track?.text"
+            (onKeyPress)="onKeyPress($event)"
+            (onFinished)="onFinished($event)">
+</typewriter>
+
 <pre>
     {{ race | json }}
 </pre>
