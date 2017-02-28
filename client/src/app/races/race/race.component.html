@@ -5,6 +5,11 @@
             (onFinished)="onFinished($event)">
 </typewriter>
 
-<pre>
-    {{ race | json }}
-</pre>
+<p>Racers:</p>
+<div *ngFor="let racer of race.racers" class="track">
+    <div class="wrapper" [style.transform]="'translateX(' + racer.distance + '%)'">
+        <div class="racer" [style.transform]="'translateX(-' + racer.distance + '%)'">
+            {{ racer.id }}
+        </div>
+    </div>
+</div>

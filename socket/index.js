@@ -25,7 +25,7 @@ module.exports = server => {
 
             race.racers = [];
             races.unshift(race);
-            socket.broadcast.emit('add-race', race);
+            racing.emit('add-race', race);
         });
 
         socket.on('remove-race', async (race) => {
@@ -33,33 +33,42 @@ module.exports = server => {
             console.log(races);
             // todo: handle -1 index
             races.splice(races.indexOf(race), 1);
-            socket.broadcast.emit('add-race', race);
+            racing.emit('remove-race', race);
         });
 
-        socket.on('join-race', async (raceId, racerId) => {
+        socket.on('join-race', async (raceId, racer) => {
             console.info('join-race');
             console.log(races);
 
             let race = races.find(race => race.id === raceId);
-            race.racers.push(racerId);
+            race.racers.push(racer);
             socket.join(raceId);
             racing.emit('join-race', {
                 raceId: raceId,
-                racerId: racerId
+                racer: racer
             });
         });
 
-        socket.on('leave-race', async (raceId, racerId) => {
+        socket.on('leave-race', async (raceId, racer) => {
             console.info('leave-race');
             console.log(races);
 
             let race = races.find(race => race.id === raceId);
             race.racers.splice(race.racers.indexOf(raceId), 1);
+
             socket.leave(raceId);
+
             racing.emit('leave-race', {
                 raceId: raceId,
-                racerId: racerId
+                racer: racer
             });
+
+            // remove the race when the last racer leaves
+            // todo: remove the race after some timeout
+            // if (race.racers.length === 0) {
+            //     races.splice(races.indexOf(race), 1);
+            //     racing.emit('remove-race', race);
+            // }
         });
 
         socket.on('get-race-info', async (raceId) => {

@@ -5,11 +5,28 @@ import uuid from 'uuid/v1';
 import {Subscription, Observable} from "rxjs";
 
 @Component({
-    templateUrl: 'race.component.html'
+    templateUrl: 'race.component.html',
+    styles: [`
+        .track {
+            padding: 1rem; 
+            border: 2px dashed white;
+        }
+        
+        .wrapper {
+            width: 100%;
+            transition: transform .2s ease-in-out;
+        }
+        
+        .racer {
+            border: 2px solid white; 
+            display: inline-block;
+            transition: transform .2s ease-in-out;
+        }
+    `]
 })
 export class RaceComponent implements OnInit, OnDestroy {
     raceId: string;
-    racerId: string;
+    racer: any;
     race: any = {};
 
     socketSubscription: Subscription;
@@ -18,7 +35,11 @@ export class RaceComponent implements OnInit, OnDestroy {
                 private socketService: SocketService) {}
 
     ngOnInit(): void {
-        this.racerId = uuid();
+
+        this.racer = {
+            id: uuid(),
+            distance: 0
+        };
 
         this.route.url
             .map(segments => segments.join(''))
@@ -31,11 +52,11 @@ export class RaceComponent implements OnInit, OnDestroy {
             .take(1)
             .do(race => {
                 this.race = race;
-                this.socketService.emit('join-race', this.raceId, this.racerId);
+                this.socketService.emit('join-race', this.raceId, this.racer);
             })
             .flatMap(() => Observable.merge(
                 this.socketService.on$('join-race')
-                    .do(data => this.race.racers.push(data.racerId)),
+                    .do(data => this.race.racers.push(data.racer)),
                 this.socketService.on$('leave-race')
                     .do(data => {
                         let racerIndex = this.race.racers.indexOf(data.racerId);
@@ -47,6 +68,10 @@ export class RaceComponent implements OnInit, OnDestroy {
 
     onKeyPress(raceSnapshot: any): void {
         console.log(raceSnapshot);
+
+        let racer = this.race.racers.find(racer => racer.id === this.racer.id);
+
+        racer.distance = (raceSnapshot.current / raceSnapshot.total) * 100;
     }
 
     onFinished(raceInfo: any): void {
@@ -64,6 +89,6 @@ export class RaceComponent implements OnInit, OnDestroy {
 
     private cleanUp(): void {
         this.socketSubscription.unsubscribe();
-        this.socketService.emit('leave-race', this.raceId, this.racerId);
+        this.socketService.emit('leave-race', this.raceId, this.racer);
     }
 }

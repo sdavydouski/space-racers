@@ -1,3 +1,10 @@
-<pre>
-    {{ races | json }}
-</pre>
+<div *ngFor="let race of races">
+    <hr>
+    <p><a [routerLink]="race.id">Go to race {{ race.id }}</a></p>
+    <p>{{ race.type }}</p>
+    <p>Racers</p>
+    <div *ngFor="let racer of race.racers">
+        <p>{{ racer }}</p>
+    </div>
+    <hr>
+</div>
