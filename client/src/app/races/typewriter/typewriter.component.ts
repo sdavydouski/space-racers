@@ -26,10 +26,6 @@ export class TypewriterComponent implements OnInit, OnChanges {
                 } else {
                     this.isCurrentWordIncorrect = false;
                     if (this.isWordFinished()) {
-                        this.onKeyPress.emit({
-                            current: this.currentWordIndex + 1,
-                            total: this.words.length
-                        });
                         this.goToTheNextWord();
                     } else if (this.isTypingFinished()) {
                         this.goToTheNextWord();
@@ -101,6 +97,11 @@ export class TypewriterComponent implements OnInit, OnChanges {
     private goToTheNextWord(): void {
         this.currentWord = '';
         this.currentWordIndex++;
+
+        this.onKeyPress.emit({
+            current: this.currentWordIndex,
+            total: this.words.length
+        });
     }
 
     private finish(): void {
