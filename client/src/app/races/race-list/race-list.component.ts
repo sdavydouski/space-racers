@@ -28,12 +28,12 @@ export class RaceListComponent implements OnInit, OnDestroy {
                 this.socketService.on$('join-race')
                     .do(data => {
                         let race = this.races.find(race => race.id === data.raceId);
-                        race.racers.push(data.racerId);
+                        race.racers.push(data.racer);
                     }),
                 this.socketService.on$('leave-race')
                     .do(data => {
                         let race = this.races.find(race => race.id === data.raceId);
-                        race.racers.splice(race.racers.indexOf(data.racerId), 1);
+                        race.racers.splice(race.racers.indexOf(data.racer), 1);
                     })
             ))
             .subscribe();

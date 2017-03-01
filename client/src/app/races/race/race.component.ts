@@ -61,17 +61,21 @@ export class RaceComponent implements OnInit, OnDestroy {
                     .do(data => {
                         let racerIndex = this.race.racers.indexOf(data.racerId);
                         this.race.racers.splice(racerIndex, 1);
+                    }),
+                this.socketService.on$('move')
+                    .do(data => {
+                        let racer = this.race.racers.find(racer => racer.id === data.racerId);
+                        racer.distance = data.distance;
                     })
             ))
             .subscribe();
     }
 
-    onKeyPress(raceSnapshot: any): void {
-        console.log(raceSnapshot);
-
+    onMove(raceSnapshot: any): void {
         let racer = this.race.racers.find(racer => racer.id === this.racer.id);
-
         racer.distance = (raceSnapshot.current / raceSnapshot.total) * 100;
+
+        this.socketService.emit('move', this.raceId, racer);
     }
 
     onFinished(raceInfo: any): void {

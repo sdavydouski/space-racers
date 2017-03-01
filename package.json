@@ -23,7 +23,8 @@
     "koa-send": "^3.3.0",
     "koa-static": "^3.0.0",
     "mongoose": "^4.8.1",
-    "socket.io": "^1.7.2"
+    "socket.io": "^1.7.2",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.16.0",

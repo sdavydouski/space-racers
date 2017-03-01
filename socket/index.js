@@ -1,11 +1,31 @@
+const uuid = require('uuid/v1');
 const Track = require('../models/track');
 
 module.exports = server => {
     const io = require('socket.io').listen(server);
+    const racing = io.of('/racing');
 
     let races = [];
 
-    const racing = io.of('/racing');
+    //todo: RacesService on the client (for caching, etc.)
+    //todo: handle incorrect race ids
+
+    // races = [{
+    //     id: 'string',
+    //     countdown: 'number',
+    //     track: {
+    //         _id: 'string',
+    //         type: 'string',
+    //         text: 'string',
+    //         createdAt: 'Date',
+    //         updatedAt: 'Date'
+    //     },
+    //     racers: [{
+    //         id: 'string',
+    //         distance: 'number',
+    //         result: 'number'
+    //     }]
+    // }];
 
     racing.on('connect', socket => {
         console.log('Client connected ' + socket.id);
@@ -14,79 +34,99 @@ module.exports = server => {
             console.log('Client disconnected ' + socket.id);
         });
 
-        socket.on('get-race-types', async () => {
-            const raceTypes = await Track.find().distinct('type');
-            socket.emit('get-race-types', raceTypes);
+        socket.on('get-track-types', async () => {
+            const types = await Track.getTypes();
+            socket.emit('get-track-types', types);
         });
 
-        socket.on('add-race', async (race) => {
-            console.info('add-race');
-            console.log(races);
+        socket.on('add-race', async (type, countdown) => {
+            let track = await Track.getRandomByType(type);
 
-            race.racers = [];
+            let race = {
+                id: uuid(),
+                countdown: countdown,
+                track: track,
+                racers: []
+            };
+
             races.unshift(race);
+
             racing.emit('add-race', race);
         });
 
-        socket.on('remove-race', async (race) => {
-            console.info('remove-race');
-            console.log(races);
-            // todo: handle -1 index
-            races.splice(races.indexOf(race), 1);
-            racing.emit('remove-race', race);
+        socket.on('remove-race', async (id) => {
+            let index = races.findIndex(race => race.id === id);
+
+            if (index > -1) {
+                races.splice(index, 1);
+                racing.emit('remove-race', id);
+            }
         });
 
-        socket.on('join-race', async (raceId, racer) => {
-            console.info('join-race');
-            console.log(races);
-
+        socket.on('join-race', async (raceId, racerId) => {
             let race = races.find(race => race.id === raceId);
+
+            let racer = {
+                id: racerId,
+                distance: 0,
+                result: 0
+            };
+
             race.racers.push(racer);
+
             socket.join(raceId);
+
             racing.emit('join-race', {
                 raceId: raceId,
                 racer: racer
             });
         });
 
-        socket.on('leave-race', async (raceId, racer) => {
-            console.info('leave-race');
-            console.log(races);
-
+        socket.on('leave-race', async (raceId, racerId) => {
             let race = races.find(race => race.id === raceId);
-            race.racers.splice(race.racers.indexOf(raceId), 1);
 
-            socket.leave(raceId);
+            let racerIndex = race.racers.findIndex(racer => racer.id === racerId);
 
-            racing.emit('leave-race', {
-                raceId: raceId,
-                racer: racer
-            });
+            if (racerIndex > -1) {
+                race.racers.splice(racerIndex, 1);
 
-            // remove the race when the last racer leaves
-            // todo: remove the race after some timeout
-            // if (race.racers.length === 0) {
-            //     races.splice(races.indexOf(race), 1);
-            //     racing.emit('remove-race', race);
-            // }
+                socket.leave(raceId);
+
+                racing.emit('leave-race', {
+                    raceId: raceId,
+                    racerId: racerId
+                });
+
+                if (race.racers.length === 0) {
+                    setTimeout(() => {
+                        if (race.racers.length === 0) {
+                            races.splice(races.indexOf(race), 1);
+                            racing.emit('remove-race', race.id);
+                        }
+                    }, 10000);
+                }
+            }
         });
 
-        socket.on('get-race-info', async (raceId) => {
-            console.info('get-race-info');
-            console.log(races);
-
-            let race = races.find(race => race.id === raceId);
-            //todo: track is a big object, handle it with caress
-            if (!race.track) {
-                race.track = await Track.findRandomByType(race.type);
-            }
-
-            socket.emit('get-race-info', race);
+        socket.on('racer-move', async (raceId, racer) => {
+            racing.in(raceId).emit({
+                racerId: racer.id,
+                distance: racer.distance
+            });
         });
 
         socket.on('init-races', async () => {
             socket.emit('init-races', races);
         });
+
+        setInterval(() => {
+            let updatedRaces = races
+                .filter(race => race.countdown > 0)
+                .forEach(race => race.countdown--)
+                .map(race => ({ id: race.id, countdown: race.countdown }));
+
+            socket.emit('update-races-countdown', updatedRaces);
+        }, 1000);
     });
 
 };

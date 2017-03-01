@@ -4,7 +4,7 @@
     <p>{{ race.type }}</p>
     <p>Racers</p>
     <div *ngFor="let racer of race.racers">
-        <p>{{ racer }}</p>
+        <p>{{ racer | json }}</p>
     </div>
     <hr>
 </div>

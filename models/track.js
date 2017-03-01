@@ -17,18 +17,22 @@ const trackSchema = new mongoose.Schema({
     timestamps: true
 });
 
-trackSchema.statics.findRandom = async () => {
+trackSchema.statics.getRandom = async () => {
     let count = await Track.count({});
     let random = Math.floor(Math.random() * count);
 
     return await Track.findOne().skip(random);
 };
 
-trackSchema.statics.findRandomByType = async (type) => {
+trackSchema.statics.getRandomByType = async (type) => {
     let count = await Track.count({ type: type });
     let random = Math.floor(Math.random() * count);
 
     return await Track.findOne({ type: type }).skip(random);
+};
+
+trackSchema.statics.getTypes = async () => {
+    return await Track.find().distinct('type');
 };
 
 const Track = mongoose.model('Track', trackSchema);

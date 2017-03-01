@@ -8,7 +8,7 @@ import {Subject} from "rxjs";
 })
 export class TypewriterComponent implements OnInit, OnChanges {
     @Input() text: string;
-    @Output() onKeyPress: EventEmitter<any> = new EventEmitter();
+    @Output() onMove: EventEmitter<any> = new EventEmitter();
     @Output() onFinished: EventEmitter<any> = new EventEmitter();
 
     words: Array<string>;
@@ -98,7 +98,7 @@ export class TypewriterComponent implements OnInit, OnChanges {
         this.currentWord = '';
         this.currentWordIndex++;
 
-        this.onKeyPress.emit({
+        this.onMove.emit({
             current: this.currentWordIndex,
             total: this.words.length
         });
