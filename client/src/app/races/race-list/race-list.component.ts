@@ -13,10 +13,9 @@ export class RaceListComponent implements OnInit, OnDestroy {
     constructor(private socketService: SocketService) {}
 
     ngOnInit(): void {
-        this.socketService.emit('init-races');
+        this.socketService.emit('get-races');
 
-        this.socketSubscription = this.socketService.on$('init-races')
-            .take(1)
+        this.socketSubscription = this.socketService.on$('get-races')
             .do(races => {
                 this.races = races;
             })
@@ -24,7 +23,13 @@ export class RaceListComponent implements OnInit, OnDestroy {
                 this.socketService.on$('add-race')
                     .do(race => this.races.unshift(race)),
                 this.socketService.on$('remove-race')
-                    .do(race => this.races.splice(this.races.indexOf(race), 1)),
+                    .do(raceId => {
+                        let raceIndex = this.races.findIndex(race => race.id === raceId);
+
+                        if (raceIndex > -1) {
+                            this.races.splice(raceIndex, 1)
+                        }
+                    }),
                 this.socketService.on$('join-race')
                     .do(data => {
                         let race = this.races.find(race => race.id === data.raceId);
@@ -33,7 +38,21 @@ export class RaceListComponent implements OnInit, OnDestroy {
                 this.socketService.on$('leave-race')
                     .do(data => {
                         let race = this.races.find(race => race.id === data.raceId);
-                        race.racers.splice(race.racers.indexOf(data.racer), 1);
+                        let racerIndex = race.racers.findIndex(racer => racer.id === data.racerId);
+
+                        if (racerIndex > -1) {
+                            race.racers.splice(racerIndex, 1);
+                        }
+                    }),
+                this.socketService.on$('update-races-countdown')
+                    .do(updatedRaces => {
+                        updatedRaces.forEach(updatedRace => {
+                            let race = this.races.find(race => race.id === updatedRace.id);
+                            // todo: could be better
+                            if (race) {
+                                race.countdown = updatedRace.countdown;
+                            }
+                        });
                     })
             ))
             .subscribe();

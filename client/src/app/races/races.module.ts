@@ -7,6 +7,7 @@ import {TypewriterComponent} from "./typewriter/typewriter.component";
 import {RacesRouting} from './races.routes';
 import {RaceComponent} from "./race/race.component";
 import {RaceListComponent} from "./race-list/race-list.component";
+import {RaceService} from "./race.service";
 
 @NgModule({
     imports: [
@@ -20,6 +21,9 @@ import {RaceListComponent} from "./race-list/race-list.component";
         NewRaceComponent,
         RaceListComponent,
         TypewriterComponent
+    ],
+    providers: [
+        RaceService
     ]
 })
 export default class RacesModule {

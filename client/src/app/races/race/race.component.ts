@@ -6,28 +6,11 @@ import {Subscription, Observable} from "rxjs";
 
 @Component({
     templateUrl: 'race.component.html',
-    styles: [`
-        .track {
-            padding: 1rem; 
-            border: 2px dashed white;
-        }
-        
-        .wrapper {
-            width: 100%;
-            transition: transform .2s ease-in-out;
-        }
-        
-        .racer {
-            border: 2px solid white; 
-            display: inline-block;
-            transition: transform .2s ease-in-out;
-        }
-    `]
+    styleUrls: ['race.component.css']
 })
 export class RaceComponent implements OnInit, OnDestroy {
-    raceId: string;
-    racer: any;
     race: any = {};
+    racerId: any;
 
     socketSubscription: Subscription;
 
@@ -35,24 +18,17 @@ export class RaceComponent implements OnInit, OnDestroy {
                 private socketService: SocketService) {}
 
     ngOnInit(): void {
-
-        this.racer = {
-            id: uuid(),
-            distance: 0
-        };
-
         this.route.url
             .map(segments => segments.join(''))
             .subscribe(raceId => {
-                this.raceId = raceId;
-                this.socketService.emit('get-race-info', this.raceId);
+                this.socketService.emit('get-race', raceId);
             });
 
-        this.socketSubscription = this.socketService.on$('get-race-info')
-            .take(1)
+        this.socketSubscription = this.socketService.on$('get-race')
             .do(race => {
                 this.race = race;
-                this.socketService.emit('join-race', this.raceId, this.racer);
+                this.racerId = uuid();
+                this.socketService.emit('join-race', this.race.id, this.racerId);
             })
             .flatMap(() => Observable.merge(
                 this.socketService.on$('join-race')
@@ -60,9 +36,12 @@ export class RaceComponent implements OnInit, OnDestroy {
                 this.socketService.on$('leave-race')
                     .do(data => {
                         let racerIndex = this.race.racers.indexOf(data.racerId);
-                        this.race.racers.splice(racerIndex, 1);
+
+                        if (racerIndex > -1) {
+                            this.race.racers.splice(racerIndex, 1);
+                        }
                     }),
-                this.socketService.on$('move')
+                this.socketService.on$('racer-move')
                     .do(data => {
                         let racer = this.race.racers.find(racer => racer.id === data.racerId);
                         racer.distance = data.distance;
@@ -72,10 +51,10 @@ export class RaceComponent implements OnInit, OnDestroy {
     }
 
     onMove(raceSnapshot: any): void {
-        let racer = this.race.racers.find(racer => racer.id === this.racer.id);
+        let racer = this.race.racers.find(racer => racer.id === this.racerId);
         racer.distance = (raceSnapshot.current / raceSnapshot.total) * 100;
 
-        this.socketService.emit('move', this.raceId, racer);
+        this.socketService.emit('racer-move', this.race.id, racer);
     }
 
     onFinished(raceInfo: any): void {
@@ -93,6 +72,6 @@ export class RaceComponent implements OnInit, OnDestroy {
 
     private cleanUp(): void {
         this.socketSubscription.unsubscribe();
-        this.socketService.emit('leave-race', this.raceId, this.racer);
+        this.socketService.emit('leave-race', this.race.id, this.racerId);
     }
 }

@@ -7,7 +7,6 @@ module.exports = server => {
 
     let races = [];
 
-    //todo: RacesService on the client (for caching, etc.)
     //todo: handle incorrect race ids
 
     // races = [{
@@ -108,25 +107,41 @@ module.exports = server => {
             }
         });
 
-        socket.on('racer-move', async (raceId, racer) => {
-            racing.in(raceId).emit({
+        socket.on('racer-move', async (raceId, updatedRacer) => {
+            let race = races.find(race => race.id === raceId);
+            let racer = race.racers.find(racer => racer.id === updatedRacer.id);
+            racer.distance = updatedRacer.distance;
+
+            racing.in(raceId).emit('racer-move', {
                 racerId: racer.id,
                 distance: racer.distance
             });
         });
 
-        socket.on('init-races', async () => {
-            socket.emit('init-races', races);
+        socket.on('get-races', async () => {
+            socket.emit('get-races', races);
         });
 
-        setInterval(() => {
-            let updatedRaces = races
-                .filter(race => race.countdown > 0)
-                .forEach(race => race.countdown--)
-                .map(race => ({ id: race.id, countdown: race.countdown }));
 
-            socket.emit('update-races-countdown', updatedRaces);
-        }, 1000);
+        //todo: do i really need this stuff?
+        socket.on('get-race', async (id) => {
+            let race = races.find(race => race.id === id);
+            socket.emit('get-race', race);
+        });
+
+        // setInterval(() => {
+        //     let updatedRaces = races
+        //         .filter(race => race.countdown > 0)
+        //         .map(race => {
+        //             race.countdown--;
+        //             return {
+        //                 id: race.id,
+        //                 countdown: race.countdown
+        //             };
+        //         });
+        //
+        //     socket.emit('update-races-countdown', updatedRaces);
+        // }, 1000);
     });
 
 };
