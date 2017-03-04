@@ -16,43 +16,57 @@ export class RaceListComponent implements OnInit, OnDestroy {
         this.socketService.emit('get-races');
 
         this.socketSubscription = this.socketService.on$('get-races')
+            .map(races => {
+                let racesArray = [];
+
+                Object.keys(races).forEach(raceId => {
+                    let race = {
+                        id: raceId,
+                        ...races[raceId]
+                    };
+
+                    let racers = [];
+                    Object.keys(races[raceId].racers).forEach(racerId => {
+                        racers.push({
+                            id: racerId,
+                            ...races[raceId].racers[racerId]
+                        })
+                    });
+                    race.racers = racers;
+
+                    racesArray.push(race);
+                });
+
+                return racesArray;
+            })
             .do(races => {
                 this.races = races;
             })
             .flatMap(() => Observable.merge(
                 this.socketService.on$('add-race')
+                    .map(race => {
+                        race.racers = [];
+                        return race;
+                    })
                     .do(race => this.races.unshift(race)),
+
                 this.socketService.on$('remove-race')
-                    .do(raceId => {
-                        let raceIndex = this.races.findIndex(race => race.id === raceId);
-
-                        if (raceIndex > -1) {
-                            this.races.splice(raceIndex, 1)
-                        }
+                    .do(id => {
+                        let index = this.races.findIndex(race => race.id === id);
+                        this.races.splice(index, 1);
                     }),
+
                 this.socketService.on$('join-race')
-                    .do(data => {
-                        let race = this.races.find(race => race.id === data.raceId);
-                        race.racers.push(data.racer);
+                    .do(({raceId, racer}) => {
+                        let race = this.races.find(race => race.id === raceId);
+                        race.racers.push(racer);
                     }),
-                this.socketService.on$('leave-race')
-                    .do(data => {
-                        let race = this.races.find(race => race.id === data.raceId);
-                        let racerIndex = race.racers.findIndex(racer => racer.id === data.racerId);
 
-                        if (racerIndex > -1) {
-                            race.racers.splice(racerIndex, 1);
-                        }
-                    }),
-                this.socketService.on$('update-races-countdown')
-                    .do(updatedRaces => {
-                        updatedRaces.forEach(updatedRace => {
-                            let race = this.races.find(race => race.id === updatedRace.id);
-                            // todo: could be better
-                            if (race) {
-                                race.countdown = updatedRace.countdown;
-                            }
-                        });
+                this.socketService.on$('leave-race')
+                    .do(({raceId, racerId}) => {
+                        let race = this.races.find(race => race.id === raceId);
+                        let index = race.racers.findIndex(racer => racer.id === racerId);
+                        race.racers.splice(index, 1);
                     })
             ))
             .subscribe();

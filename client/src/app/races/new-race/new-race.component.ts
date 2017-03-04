@@ -17,7 +17,7 @@ export class NewRaceComponent implements OnInit, OnDestroy {
                 private socketService: SocketService,) {}
 
     addRace(type: string): void {
-        this.socketService.emit('add-race', type);
+        this.socketService.emit('add-race', type, 30);
         this.addRaceSubscription = this.socketService.on$('add-race')
             .subscribe(race => {
                 this.router.navigate([`../${race.id}`], {
