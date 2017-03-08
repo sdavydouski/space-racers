@@ -31,7 +31,7 @@ export class RaceComponent implements OnInit, OnDestroy {
                 let racers = [];
                 Object.keys(race.racers).forEach(key => racers.push({
                     id: key,
-                    ...racers[key]
+                    ...race.racers[key]
                 }));
 
                 this.race.racers = racers;
@@ -52,6 +52,11 @@ export class RaceComponent implements OnInit, OnDestroy {
                     .do(updatedRacer => {
                         let racer = this.race.racers.find(racer => racer.id === updatedRacer.id);
                         racer.distance = updatedRacer.distance;
+                    }),
+                this.socketService.on$('race-finished')
+                    .do(updatedRacer => {
+                        let racer = this.race.racers.find(racer => racer.id === updatedRacer.id);
+                        racer.result = updatedRacer.result;
                     })
             ))
             .subscribe();
@@ -66,7 +71,7 @@ export class RaceComponent implements OnInit, OnDestroy {
     }
 
     onFinished(raceInfo: any): void {
-        console.log('Race is finished!', raceInfo);
+        this.socketService.emit('race-finished', this.race.id, this.racerId);
     }
 
     ngOnDestroy(): void {

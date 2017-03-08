@@ -33,7 +33,7 @@ export class NewRaceComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         //todo: is it really necessary?
-        this.addRaceSubscription.unsubscribe();
+        this.addRaceSubscription && this.addRaceSubscription.unsubscribe();
     }
 
 }
