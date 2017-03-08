@@ -1,29 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {SocketService} from "./races/socket.service";
 
 @Component({
     selector: 'app-root',
-    styles: [`
-        a{
-            text-decoration: none;
-        }
-        
-        a.active{
-            font-weight: bold;
-        }
-    `],
-    template: `
-    <nav>
-        <a *ngFor="let nav of navs"
-            [routerLink]="nav.url" 
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{exact:true}"
-            >
-            {{nav.content}}
-        </a>
-    </nav>
-    <router-outlet></router-outlet>
-    `
+    templateUrl: 'app.component.html'
 })
 export class AppComponent {
     navs = [
