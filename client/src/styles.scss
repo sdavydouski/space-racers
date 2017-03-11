@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Play');
 @import "variables";
 
 html, body {
     font-size: 16px;
+    font-family: 'Play', sans-serif;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -9,9 +12,18 @@ html, body {
 body {
     background: $backgroundColor;
     color: $foregroundColor;
-    padding: .5rem;
 }
 
 a {
     color: $foregroundColor;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        color: $primaryColor;
+    }
+}
+
+.hidden {
+    display: none;
 }

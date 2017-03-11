@@ -3,16 +3,16 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {AppRouting} from './app.routes';
 import {SocketService} from "./races/socket.service";
-import {MainMenuComponent} from "./main-menu/main-menu.component";
+import {SharedModule} from "./shared/shared.module";
 
 @NgModule({
     imports: [
         BrowserModule,
-        AppRouting
+        AppRouting,
+        SharedModule
     ],
     declarations: [
-        AppComponent,
-        MainMenuComponent
+        AppComponent
     ],
     providers: [
         SocketService
