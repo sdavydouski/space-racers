@@ -8,6 +8,14 @@ const routes = [
     {
         path: 'races',
         loadChildren: 'app/races/races.module'
+    },
+    {
+        path: 'settings',
+        loadChildren: 'app/settings/settings.module'
+    },
+    {
+        path: 'about',
+        loadChildren: 'app/about/about.module'
     }
 ];
 

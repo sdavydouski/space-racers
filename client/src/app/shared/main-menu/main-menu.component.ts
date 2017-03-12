@@ -15,8 +15,12 @@ export class MainMenuComponent implements OnInit {
     ngOnInit() {
         this.router.events
             .filter(event => event instanceof NavigationStart)
-            .subscribe(event => {
-                event.url === '/' ? this.showMenu() : this.hideMenu();
+            .do(() => {
+                this.showMenu();
+            })
+            .filter(({url}) => !['/', '/settings', '/about'].includes(url))
+            .subscribe(() => {
+                this.hideMenu();
             });
     }
 

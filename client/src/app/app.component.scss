@@ -4,46 +4,73 @@
     display: flex;
     min-height: 100%;
     flex-direction: column;
+    overflow: hidden;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    padding: .5rem .5rem .5rem 0;
-    box-shadow: 0 0 10px darken($backgroundColor, 20%);
+//todo: 2000px - hmm...
+// n is number of stars required
+@function multiple-box-shadow ($n) {
+    $value: '#{random(2000)}px #{random(2000)}px #FFF';
+
+    @for $i from 2 through $n {
+        $value: '#{$value} , #{random(2000)}px #{random(2000)}px #FFF'
+    }
+
+    @return unquote($value)
 }
 
-.logo {
-    > * {
-        vertical-align: middle;
-    }
-
-    > .rocket {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        background-color: $foregroundColor;
-        mask: url('../assets/images/logo.svg') no-repeat 0 50%;
-    }
-
-    > strong {
-        font-size: 2rem;
-        font-weight: normal;
-        margin-left: .5rem;
-    }
-
-    &:hover > .rocket {
-        background-color: $primaryColor;
-    }
-}
-
-.sign-in {
-    align-self: center;
-}
+$shadows-small: multiple-box-shadow(700);
+$shadows-medium: multiple-box-shadow(200);
 
 main {
     flex: 1;
 }
+
+.distantStars {
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    box-shadow: $shadows-small;
+    animation: starsAnimation 50s linear infinite;
+
+    &:after {
+        content: ' ';
+        position: absolute;
+        top: 2000px;
+        width: 1px;
+        height: 1px;
+        background: transparent;
+        box-shadow: $shadows-small;
+    }
+}
+
+.closeStars {
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow: $shadows-medium;
+    animation: starsAnimation 100s linear infinite;
+
+    &:after {
+        content: ' ';
+        position: absolute;
+        top: 2000px;
+        width: 2px;
+        height: 2px;
+        background: transparent;
+        box-shadow: $shadows-medium;
+    }
+}
+
+@keyframes starsAnimation {
+    from {
+        transform: translateY(0px)
+    }
+    to {
+        transform: translateY(-2000px)
+    }
+}
+
 
 footer {
     text-align: center;

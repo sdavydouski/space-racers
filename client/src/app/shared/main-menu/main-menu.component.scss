@@ -29,7 +29,7 @@ $mainMenuButtonSize: 2rem;
 nav {
     position: fixed;
     margin-top: 1.5rem;
-    background: $backgroundColor;
+    //background: $backgroundColor;
     z-index: 10;
 
     > a {
@@ -51,8 +51,12 @@ nav {
             transition: all 0.1s ease-in-out 0s;
         }
 
-        &:hover:before {
+        &:hover:before, &.active:before {
             transform: scaleX(1);
         }
+    }
+
+    > a.active {
+        color: $primaryColor;
     }
 }
