@@ -2,11 +2,16 @@
   "name": "space-racers-client",
   "version": "0.0.1",
   "description": "Client app for Space Racers",
-  "license": "MIT",
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wiranoid/space-racers.git"
+  },
+  "author": "wiranoid",
+  "license": "MIT",
   "dependencies": {
     "@angular/common": "^4.2.4",
     "@angular/compiler": "^4.2.4",

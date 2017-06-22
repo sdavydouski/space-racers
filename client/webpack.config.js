@@ -1,10 +1,11 @@
 const path = require('path');
 
 module.exports = {
-    entry: './index.ts',
+    context: path.resolve(__dirname, 'src'),
+    entry: './main.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'index.bundle.js'
+        filename: 'app.bundle.js'
     },
     module: {
         rules: [
@@ -13,5 +14,8 @@ module.exports = {
                 loader: 'awesome-typescript-loader'
             }
         ]
-    }
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.json']
+    },
 };

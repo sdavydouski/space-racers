@@ -8,9 +8,9 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/spaceracersdb');
 
 app.use(require('./routes/api'));
-app.use(serve(__dirname + '/client/dist'));
+app.use(serve(__dirname + '/client'));
 app.use(async (ctx) => {
-    await send(ctx, 'index.html', {root: __dirname + '/client/dist/'});
+    await send(ctx, 'index.html');
 });
 
 const server = require('http').createServer(app.callback());
