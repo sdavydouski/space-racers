@@ -1,8 +1,0 @@
-<h3>Race Types</h3>
-<select #selectedTrackType>
-    <option *ngFor="let trackype of trackTypes | async"
-            [value]="trackype">
-        {{ trackype }}
-    </option>
-</select>
-<button (click)="addRace(selectedTrackType.value)">Go!</button>

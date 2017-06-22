@@ -2,10 +2,10 @@
   "name": "space-racers",
   "version": "0.0.1",
   "description": "Online multiuser typing game",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index",
-    "watch": "nodemon index"
+    "start": "node app",
+    "watch": "nodemon app"
   },
   "repository": {
     "type": "git",
@@ -18,18 +18,15 @@
   },
   "homepage": "https://github.com/wiranoid/space-racers#readme",
   "dependencies": {
-    "koa": "^2.0.0-alpha.7",
-    "koa-router": "^7.0.1",
-    "koa-send": "^3.3.0",
+    "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "koa-send": "^4.1.0",
     "koa-static": "^3.0.0",
-    "mongoose": "^4.8.1",
-    "socket.io": "^1.7.2",
-    "uuid": "^3.0.1"
+    "mongoose": "^4.10.8",
+    "socket.io": "^2.0.3",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-register": "^6.18.0",
     "nodemon": "^1.11.0"
   }
 }

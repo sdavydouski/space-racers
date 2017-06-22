@@ -15,8 +15,6 @@ app.use(async (ctx) => {
 
 const server = require('http').createServer(app.callback());
 
-require('./socket')(server);
-
 server.listen(3000, () => {
     console.log('Listening on port 3000...');
 });
